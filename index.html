@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Lato|Rubik" rel="stylesheet">
+</head>
+
+<style type="text/css">
+body {
+  font-family: 'Lato', sans-serif;
+}
+#container {
+  width: 90%;
+  margin: 0px auto;
+}
+h1,h2 {
+  font-family: 'Rubik', sans-serif;
+  color: #e02648;
+}
+#or {
+  font-size: 1.5em;
+}
+a {
+  color: #e02648;
+}
+button {
+  background-color: #e02648;
+  border: none;
+  outline: none;
+  padding: 20px;
+  color: white;
+  font-size: 2em;
+}
+button:active {
+  background-color: #1fd9b7;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+li {
+  margin: 10px 0px;
+}
+
+@media (min-width: 769px) {
+  #container {
+    width: 50%;
+  }
+}
+
+
+</style>
+<body>
+  <div id="container">
+    <h1>Unofficial Waypoint Radio Random Episode Picker</h1>
+    <section>
+      <button id="random-btn">Roll Again</button> <span id="or">or</span> <button id="all-btn">Show All</button>
+    </section>
+    <section id="content">
+
+    </section>
+  </div>
+
+<script type="text/javascript">
+
+var episodes;
+
+fetch('episodes.json').then(function(res) {
+  if (res.ok) {
+
+    res.json().then(function(data) {
+      episodes = data;
+      displayRandomEpisode();
+    });
+  }
+});
+
+function pickRandomEpisode() {
+  return episodes[Math.floor(Math.random()*episodes.length)];
+}
+
+function displayRandomEpisode(e) {
+  var episode = pickRandomEpisode();
+
+  var contentElement = document.getElementById('content');
+
+  var randomDetail = document.createElement('section')
+  var h2 = document.createElement('h2');
+  h2.innerHTML = episode.title;
+  randomDetail.appendChild(h2);
+  var a = document.createElement('a');
+  a.innerHTML = "Hey, Listen";
+  a.href = episode.link;
+  a.target = '_blank';
+  randomDetail.appendChild(a);
+  var desc = document.createElement('p');
+  desc.innerHTML = episode.description;
+  randomDetail.appendChild(desc);
+
+  contentElement.removeChild(contentElement.firstChild);
+  contentElement.appendChild(randomDetail);
+}
+
+document.getElementById('random-btn').addEventListener('click', function(){
+  displayRandomEpisode();
+});
+document.getElementById('all-btn').addEventListener('click', function(){
+  displayAllEpisodes();
+});
+
+function displayAllEpisodes() {
+  var contentElement = document.getElementById('content');
+
+  var episodeList = document.createElement('ul');
+  for (var i = 0; i < episodes.length; i++) {
+
+    var li = document.createElement('li');
+
+    var a = document.createElement('a');
+    a.innerHTML = episodes[i].title;
+    a.href = episodes[i].link;
+    a.target = '_blank';
+    li.appendChild(a);
+    episodeList.appendChild(li);
+
+
+    contentElement.removeChild(contentElement.firstChild);
+    contentElement.appendChild(episodeList);
+  }
+
+}
+</script>
+
+</body>
+</html>
