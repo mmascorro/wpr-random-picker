@@ -69,7 +69,7 @@ li {
 
 var episodes;
 
-fetch('episodes.json').then(function(res) {
+fetch('episodes.json', {cache: 'no-store'}).then(function(res) {
   if (res.ok) {
 
     res.json().then(function(data) {
