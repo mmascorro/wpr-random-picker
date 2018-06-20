@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Random Waypoint Form Topic</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Lato|Rubik" rel="stylesheet">
+</head>
+
+<style type="text/css">
+body {
+  font-family: 'Lato', sans-serif;
+}
+#container {
+  width: 90%;
+  margin: 0px auto;
+}
+h1,h2 {
+  font-family: 'Rubik', sans-serif;
+  color: #e02648;
+}
+#or {
+  font-size: 1.5em;
+}
+a {
+  color: #e02648;
+}
+button {
+  background-color: #e02648;
+  border: none;
+  outline: none;
+  padding: 20px;
+  color: white;
+  font-size: 2em;
+}
+button:active {
+  background-color: #1fd9b7;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+li {
+  margin: 10px 0px;
+}
+
+@media (min-width: 769px) {
+  #container {
+    width: 50%;
+  }
+}
+
+
+</style>
+<body>
+  <div id="container">
+    <h1>Unofficial Waypoint Forum Random Topic Picker</h1>
+    <p><a href="index.html">Want to see Podcast titles instead?</a></p>
+    <section>
+      <button id="random-btn">Roll Again</button> <span id="or">or</span> <button id="all-btn">Show All</button>
+    </section>
+    <section id="content">
+
+    </section>
+  </div>
+
+<script type="text/javascript">
+var baseUrl = 'https://forum.waypoint.vice.com';
+var topics;
+
+displayLoadingMsg();
+
+fetch('topics.json').then(function(res) {
+  if (res.ok) {
+
+    res.json().then(function(data) {
+      topics = data;
+      displayRandomTopic();
+    });
+  }
+});
+
+function pickRandomTopic() {
+  return topics[Math.floor(Math.random()*topics.length)];
+}
+
+function displayRandomTopic(e) {
+  var topic = pickRandomTopic();
+
+  var contentElement = document.getElementById('content');
+
+  var randomDetail = document.createElement('section')
+  var h2 = document.createElement('h2');
+  h2.innerHTML = topic.title;
+  randomDetail.appendChild(h2);
+  var a = document.createElement('a');
+  a.innerHTML = "View topic";
+  a.href = baseUrl + '/t/' + topic.slug + '/' + topic.id;
+  a.target = '_blank';
+  randomDetail.appendChild(a);
+
+  contentElement.removeChild(contentElement.firstChild);
+  contentElement.appendChild(randomDetail);
+}
+
+document.getElementById('random-btn').addEventListener('click', function(){
+  displayRandomTopic();
+});
+document.getElementById('all-btn').addEventListener('click', function(){
+  displayLoadingMsg();
+  displayAlltopics();
+});
+
+function displayAlltopics() {
+  var contentElement = document.getElementById('content');
+
+  var topicList = document.createElement('ul');
+  for (var i = 0; i < topics.length; i++) {
+
+    var li = document.createElement('li');
+
+    var a = document.createElement('a');
+    a.innerHTML = topics[i].title;
+    a.href = baseUrl + '/t/' + topics[i].slug + '/' + topics[i].id;
+    a.target = '_blank';
+    li.appendChild(a);
+    topicList.appendChild(li);
+
+
+    contentElement.removeChild(contentElement.firstChild);
+    contentElement.appendChild(topicList);
+  }
+
+}
+
+function displayLoadingMsg() {
+  console.log('load')
+  var contentElement = document.getElementById('content');
+
+  var h2 = document.createElement('h2');
+  h2.innerHTML = 'LOADING...';
+
+  contentElement.removeChild(contentElement.firstChild);
+  contentElement.appendChild(h2);
+}
+</script>
+
+</body>
+</html>
