@@ -1,19 +1,37 @@
-const request = require('request');
 const fs = require('fs');
+const https = require('https');
 
 const baseUrl = 'https://forum.waypoint.vice.com';
 let topics = [];
 
 
 function getTopics(url) {
-  request({url:url, json:true}, (error,response,body)=> {
+  let responseData = '';
 
-    processTopics(body.topic_list)
+  const feedReq = https.request(url, (res) => {
+    res.setEncoding('utf8');
+    res.on('data', (chunk) => {
+      responseData += chunk;    
+    });
+    res.on('end', () => {
+      let data = JSON.parse(responseData);
+      processTopics(data.topic_list)
+    });
+  })
+  feedReq.on('error', (e) => {
+    console.log(e)
   });
+  feedReq.end();
+  
+
 }
 
+
+
+
+
+
 function processTopics(topic_list) {
-  // console.log(topic_list)
 
   topic_list.topics.forEach((element) => {
     topic = {};

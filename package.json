@@ -9,7 +9,6 @@
   "author": "Miguel Mascorro",
   "license": "ISC",
   "dependencies": {
-    "feedparser": "^2.2.9",
-    "request": "^2.87.0"
+    "feedparser": "^2.2.10"
   }
 }
